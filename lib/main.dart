@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_cupertino/slideradaptativo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,36 +30,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  bool animate = false;
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
       body: Center(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            SliderAdaptativo(),
-          ],
+        child: AnimatedContainer (
+          duration: Duration(milliseconds: 400),
+          height: animate ? height : 50,
+          width: animate ? width : 50,
+          color: animate ? Colors.blue : Colors.red,
+          curve: Curves.decelerate
         ),
       ),
-    ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () {
+          setState (() {
+            animate = true;
+          });
+        },
+        child: Icon(Icons.remove_red_eye),
       ),
     );
   }
