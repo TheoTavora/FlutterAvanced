@@ -7,7 +7,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,47 +31,68 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool animate = false;
+  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+
+  List<String> nomes = ['Rodrigo'];
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Center(
-        child: Stack(
-         children: [
-          AnimatedPositioned(
-          child: Container(
-            color: Colors.red,
-            height: 50,
-            width: 50,
+      appBar: AppBar(
+        actions: [
+          GestureDetector(
+            onTap: () {
+              listKey.currentState!.insertItem(
+                0,
+                duration: Duration(milliseconds: 500),
+              );
+              setState(() {
+                nomes =
+                    []
+                      ..add('Test')
+                      ..addAll(nomes);
+              });
+            },
+            child: Icon(Icons.add),
           ),
-          left: animate ? width : 0,
-          top: 100,
-          duration: Duration(milliseconds: 5000),
-        ),
-        Positioned(
-          top: 150,
-          left: 0,
-          child: Container(
-            color: Colors.black,
-            width: width,
-            height: 3,
+          SizedBox(width: 22),
+          GestureDetector(
+            onTap: () {
+              listKey.currentState!.removeItem(
+                0,
+                (context, animation) => slideTransition(context, 0, animation),
+                duration: Duration(milliseconds: 500),
+              );
+              setState(() {
+                nomes.removeAt(0);
+              });
+            },
+            child: Icon(Icons.delete),
           ),
-        )
-        ], 
+        ],
+      ),
+      body: SafeArea(
+        child: AnimatedList(
+          key: listKey,
+          initialItemCount: nomes.length,
+          itemBuilder: slideTransition,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState (() {
-            if (animate) {
-              animate = false;
-            } else {
-              animate = true;
-            }
-          });
-        },
-        child: Icon(Icons.remove_red_eye),
+    );
+  }
+
+  Widget slideTransition(
+    BuildContext context,
+    int index,
+    Animation<double> animation,
+  ) {
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: Offset(-1, 0),
+        end: Offset(0, 0),
+      ).animate(animation),
+      child: ListTile(
+        title: Text(nomes[index]), // Agora a variável "nomes" está acessível
       ),
     );
   }
