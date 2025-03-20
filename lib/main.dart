@@ -35,23 +35,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Center(
-        child: AnimatedCrossFade (
-          firstChild: Icon(
-            Icons.signal_wifi_4_bar,
-            size: 80,
-            color: Colors.green,
-            ),
-          secondChild: Icon(
-            Icons.signal_wifi_off,
-            size: 80,
+        child: Stack(
+         children: [
+          AnimatedPositioned(
+          child: Container(
             color: Colors.red,
-            ),
-          crossFadeState: 
-          animate ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-          duration: Duration(milliseconds: 400),
+            height: 50,
+            width: 50,
+          ),
+          left: animate ? width : 0,
+          top: 100,
+          duration: Duration(milliseconds: 5000),
+        ),
+        Positioned(
+          top: 150,
+          left: 0,
+          child: Container(
+            color: Colors.black,
+            width: width,
+            height: 3,
+          ),
+        )
+        ], 
         ),
       ),
       floatingActionButton: FloatingActionButton(
