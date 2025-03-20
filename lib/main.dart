@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -34,22 +35,33 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Center(
-        child: AnimatedContainer (
+        child: AnimatedCrossFade (
+          firstChild: Icon(
+            Icons.signal_wifi_4_bar,
+            size: 80,
+            color: Colors.green,
+            ),
+          secondChild: Icon(
+            Icons.signal_wifi_off,
+            size: 80,
+            color: Colors.red,
+            ),
+          crossFadeState: 
+          animate ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: Duration(milliseconds: 400),
-          height: animate ? height : 50,
-          width: animate ? width : 50,
-          color: animate ? Colors.blue : Colors.red,
-          curve: Curves.decelerate
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState (() {
-            animate = true;
+            if (animate) {
+              animate = false;
+            } else {
+              animate = true;
+            }
           });
         },
         child: Icon(Icons.remove_red_eye),
