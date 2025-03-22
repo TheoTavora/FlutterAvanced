@@ -40,9 +40,6 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
       vsync: this,
       duration: Duration(milliseconds: 900),
     );
-    _controller.addListener(() {
-      setState(() {});
-    });
     colorTween = ColorTween(
       begin: Colors.red,
       end: Colors.green,
@@ -61,10 +58,13 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
-          width: 200,
-          height: 200,
-          color: colorTween.evaluate(_controller),
+        child: AnimatedBuilder(
+          animation: colorTween.animate(_controller),
+          builder: (context, child) => Container(
+            width: 200,
+            height: 200,
+            color: colorTween.evaluate(_controller),
+          )
           )
         ),
     );
