@@ -29,29 +29,24 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+  
   late AnimationController _controller;
+  late ColorTween colorTween;
 
   @override
   void initState() {
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 900),
-      lowerBound: 0,
-      upperBound: 150,
     );
     _controller.addListener(() {
       setState(() {});
     });
-    _controller.addStatusListener((status) { 
-      if (status == AnimationStatus.completed) {
-        _controller.reverse();
-      }
-      //if (status == AnimationStatus.dismissed) {
-      //  _controller.forward();
-      // }
-    });
+    colorTween = ColorTween(
+      begin: Colors.red,
+      end: Colors.green,
+    )..animate(CurvedAnimation(parent: _controller, curve: Curves.bounceIn));
     _controller.forward();
     super.initState();
   }
@@ -67,9 +62,9 @@ class _MyHomePageState extends State<MyHomePage>
     return Scaffold(
       body: Center(
         child: Container(
-          width: 50 + _controller.value,
-          height: 50 + _controller.value,
-          color: Colors.red
+          width: 200,
+          height: 200,
+          color: colorTween.evaluate(_controller),
           )
         ),
     );
