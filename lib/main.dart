@@ -29,71 +29,49 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  bool animate = false;
-  final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
-  List<String> nomes = ['Rodrigo'];
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 900),
+      lowerBound: 0,
+      upperBound: 150,
+    );
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.addStatusListener((status) { 
+      if (status == AnimationStatus.completed) {
+        _controller.reverse();
+      }
+      //if (status == AnimationStatus.dismissed) {
+      //  _controller.forward();
+      // }
+    });
+    _controller.forward();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          GestureDetector(
-            onTap: () {
-              listKey.currentState!.insertItem(
-                0,
-                duration: Duration(milliseconds: 500),
-              );
-              setState(() {
-                nomes =
-                    []
-                      ..add('Test')
-                      ..addAll(nomes);
-              });
-            },
-            child: Icon(Icons.add),
-          ),
-          SizedBox(width: 22),
-          GestureDetector(
-            onTap: () {
-              listKey.currentState!.removeItem(
-                0,
-                (context, animation) => slideTransition(context, 0, animation),
-                duration: Duration(milliseconds: 500),
-              );
-              setState(() {
-                nomes.removeAt(0);
-              });
-            },
-            child: Icon(Icons.delete),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: AnimatedList(
-          key: listKey,
-          initialItemCount: nomes.length,
-          itemBuilder: slideTransition,
+      body: Center(
+        child: Container(
+          width: 50 + _controller.value,
+          height: 50 + _controller.value,
+          color: Colors.red
+          )
         ),
-      ),
-    );
-  }
-
-  Widget slideTransition(
-    BuildContext context,
-    int index,
-    Animation<double> animation,
-  ) {
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: Offset(-1, 0),
-        end: Offset(0, 0),
-      ).animate(animation),
-      child: ListTile(
-        title: Text(nomes[index]), // Agora a variável "nomes" está acessível
-      ),
     );
   }
 }
